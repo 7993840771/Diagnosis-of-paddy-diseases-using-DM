@@ -1,0 +1,161 @@
+# THis  only final project
+from tkinter import *
+import numpy as np
+import pandas as pd
+l1=['Fast Growth of plants','Early Flowering','lean and lanky plants','plant is several inches taller than normal plants','Spindle shaped spots with greysih centres of brown margins on leaves','Brown to black color on plant neck','Irregular  black areas encircles the 0dal regions','Smooth yellow spores on rice grain','Black color spores on rice grain','Stunted growth of plant','Leaves turn yellow','Delay Flowering','More GreenLeafhopper','Snake band like lesion on stem above the water level','Irregular greenish grey spots  on the leaf sheath just above the soil'] 
+disease=['chances of foot rot','foot rot','blast','false smut','chances of rice tungro','rice tungro','sheath blight']
+l2=[]
+for x in range(0,len(l1)):
+    l2.append(0)
+#print(l2)    
+df= pd.read_csv("C:/Users/Lenovo/Desktop/sirdataset.csv", delimiter=',', header=None, skiprows=1, names=['Fast Growth of plants','Early Flowering','lean and lanky plants','plant is several inches taller than normal plants','Spindle shaped spots with greysih centres of brown margins on leaves','Brown to black color on plant neck','Irregular  black areas encircles the 0dal regions','Smooth yellow spores on rice grain','Black color spores on rice grain','Stunted growth of plant','Leaves turn yellow','Delay Flowering','More GreenLeafhopper','Snake band like lesion on stem above the water level','Irregular greenish grey spots  on the leaf sheath just above the soil','Disease'])
+#y=df.columns
+#print(y)
+df.replace({'Disease':{'Chances of foot rot':0, 'foot rot':1, 'blast':2, 'false smut':3, 'chances of rice tungro':4, 'rice tungro':5, 'sheath blight':6}},inplace =True)
+X=df[l1]
+
+y=df[["Disease"]]
+np.ravel(y)
+
+tf= pd.read_csv("C:/Users/Lenovo/Desktop/sirdataset.csv", delimiter=',', header=None, skiprows=1, names=['Fast Growth of plants','Early Flowering','lean and lanky plants','plant is several inches taller than normal plants','Spindle shaped spots with greysih centres of brown margins on leaves','Brown to black color on plant neck','Irregular  black areas encircles the 0dal regions','Smooth yellow spores on rice grain','Black color spores on rice grain','Stunted growth of plant','Leaves turn yellow','Delay Flowering','More GreenLeafhopper','Snake band like lesion on stem above the water level','Irregular greenish grey spots  on the leaf sheath just above the soil','Disease'])
+#y=df.columns
+#print(y)
+tf.replace({'Disease':{'Chances of foot rot':0, 'foot rot':1, 'blast':2, 'false smut':3, 'chances of rice tungro':4, 'rice tungro':5, 'sheath blight':6}},inplace =True)
+X_test=tf[l1]
+y_test=tf[["Disease"]]
+np.ravel(y_test)
+
+def NaiveBayes():
+    from sklearn.naive_bayes import GaussianNB
+    gnb = GaussianNB()
+    gnb=gnb.fit(X, np.ravel(y))
+
+    # calculating accuracy-------------------------------------------------------------------
+    from sklearn.metrics import accuracy_score
+    y_pred=gnb.predict(X_test)
+    print(accuracy_score(y_test, y_pred))
+    print(accuracy_score(y_test, y_pred,normalize=False))
+    # -----------------------------------------------------
+
+    psymptoms = [Symptom1.get(),Symptom2.get(),Symptom3.get(),Symptom4.get(),Symptom5.get()]
+    for k in range(0,len(l1)):
+        for z in psymptoms:
+            if(z==l1[k]):
+                l2[k]=1
+    #print(l2)
+
+    inputtest = [l2]
+    predict = gnb.predict(inputtest)
+    predicted=predict[0]
+    print(predicted)
+
+    h='no'
+    for a in range(0,len(disease)):
+        if(predicted == a):
+            h='yes'
+            break
+
+    if (h=='yes'):
+        t3.delete("1.0", END)
+        t3.insert(END, "not found")
+    else:
+        t3.delete("1.0", END)
+        t3.insert(END, predicted)
+        
+root = Tk()
+root.configure(background='lightblue')
+
+# entry variables
+Symptom1 = StringVar()
+Symptom1.set(None)
+Symptom2 = StringVar()
+Symptom2.set(None)
+Symptom3 = StringVar()
+Symptom3.set(None)
+Symptom4 = StringVar()
+Symptom4.set(None)
+Symptom5 = StringVar()
+Symptom5.set(None)
+Name = StringVar()
+
+# Heading
+w2 = Label(root, justify=LEFT, text="Diagnosis of paddy diseases ", fg="blue")
+w2.config(font=("Elephant", 30))
+w2.grid(row=1, column=0, columnspan=2, padx=100)
+w2 = Label(root, justify=LEFT, text="Mostly occured paddy diseases are identified using symptoms", fg="red")
+w2.config(font=("Aharoni", 12))
+w2.grid(row=2, column=0, columnspan=2, padx=100)
+
+# labels
+NameLb = Label(root, text="Name of the Farmer", fg="yellow", bg="black")
+NameLb.grid(row=6, column=0, pady=15, sticky=W)
+
+
+S1Lb = Label(root, text="Symptom 1", fg="yellow", bg="black")
+S1Lb.grid(row=7, column=0, pady=10, sticky=W)
+
+S2Lb = Label(root, text="Symptom 2", fg="yellow", bg="black")
+S2Lb.grid(row=8, column=0, pady=10, sticky=W)
+
+S3Lb = Label(root, text="Symptom 3", fg="yellow", bg="black")
+S3Lb.grid(row=9, column=0, pady=10, sticky=W)
+
+S4Lb = Label(root, text="Symptom 4", fg="yellow", bg="black")
+S4Lb.grid(row=10, column=0, pady=10, sticky=W)
+
+S5Lb = Label(root, text="Symptom 5", fg="yellow", bg="black")
+S5Lb.grid(row=11, column=0, pady=10, sticky=W)
+
+
+#lrLb = Label(root, text="DecisionTree", fg="white", bg="red")
+#lrLb.grid(row=15, column=0, pady=10,sticky=W)
+
+#destreeLb = Label(root, text="RandomForest", fg="white", bg="red")
+#destreeLb.grid(row=17, column=0, pady=10, sticky=W)
+
+ranfLb = Label(root, text="NaiveBayes", fg="white", bg="red")
+ranfLb.grid(row=19, column=0, pady=10, sticky=W)
+
+# entries
+OPTIONS = sorted(l1)
+
+NameEn = Entry(root, textvariable=Name)
+NameEn.grid(row=6, column=1)
+
+S1En = OptionMenu(root, Symptom1,*OPTIONS)
+S1En.grid(row=7, column=1)
+
+S2En = OptionMenu(root, Symptom2,*OPTIONS)
+S2En.grid(row=8, column=1)
+
+S3En = OptionMenu(root, Symptom3,*OPTIONS)
+S3En.grid(row=9, column=1)
+
+S4En = OptionMenu(root, Symptom4,*OPTIONS)
+S4En.grid(row=10, column=1)
+
+S5En = OptionMenu(root, Symptom5,*OPTIONS)
+S5En.grid(row=11, column=1)
+
+
+#dst = Button(root, text="Prediction1", command=DecisionTree,bg="green",fg="yellow")
+#dst.grid(row=8, column=3,padx=10)
+
+#rnf = Button(root, text="Prediction2", command=randomforest,bg="green",fg="yellow")
+#rnf.grid(row=9, column=3,padx=10)
+
+lr = Button(root, text="Prediction", command=NaiveBayes,bg="green",fg="yellow")
+lr.grid(row=10, column=3,padx=10)
+
+#textfileds
+#t1 = Text(root, height=1, width=40,bg="orange",fg="black")
+#t1.grid(row=15, column=1, padx=10)
+
+#t2 = Text(root, height=1, width=40,bg="orange",fg="black")
+#t2.grid(row=17, column=1 , padx=10)
+
+t3 = Text(root, height=1, width=40,bg="orange",fg="black")
+t3.grid(row=19, column=1 , padx=10)
+
+root.mainloop()
+        
