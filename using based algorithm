@@ -1,0 +1,38 @@
+#Loading packages
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn import tree
+
+data = 'C:/Users/Lenovo/Desktop/sirdataset.csv'
+dt = pd.read_csv(data,sep=',', header=0)
+dt.head()
+# Data set in kaggle repository
+X= dt.iloc[:,:-1].values
+Y = dt.iloc[:,-1].values
+#X
+
+from sklearn.preprocessing import LabelEncoder 
+  
+le = LabelEncoder() 
+  
+Y = le.fit_transform(Y)  
+Y
+
+from sklearn.model_selection import train_test_split
+
+# Split dataset into training set and test set
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3,random_state=109) # 70% training and 30% test
+
+from sklearn.naive_bayes import GaussianNB
+
+#Create a Gaussian Classifier
+gnb = GaussianNB()
+
+#Train the model using the training sets
+gnb.fit(X_train, y_train)
+
+#Predict the response for test dataset
+y_pred = gnb.predict(X_test)
+y_pred
